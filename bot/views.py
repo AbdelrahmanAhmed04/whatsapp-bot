@@ -39,7 +39,7 @@ client.messages.create(
 
 @csrf_exempt
 def bot(request):
-    message = request.POST["Body"]
+    # message = request.POST["Body"]
     listId = request.POST["ListId"]
     # print(listId)
     # senderName = request.POST["ProfileName"]
