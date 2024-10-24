@@ -1,4 +1,5 @@
 import os
+import re
 import time
 from datetime import datetime
 
@@ -97,13 +98,10 @@ def whatsapp_reply():
         log_message_in_dynamodb(from_number, "Sent welcome mssage", "outgoing", message.sid, profile_name, to_number)
         time.sleep(2)
 
-        if message_body.startswith("run algorithem send messages auto"):
+        if "run algorithem send messages auto" in message_body:
 
-            # run algoithem send messages auto +20100054874, +2454621654
-
-            numbers_part = message_body[len("run algorithem send messages auto "):]
-            # Create an array by splitting the numbers part by comma and trimming spaces
-            phone_numbers = [number.strip() for number in numbers_part.split(",")]
+            pattern = r'\+\d+'
+            phone_numbers = re.findall(pattern, message_body)
 
             # Function to send a message to a list of numbers
             def send_messages_to_numbers(numbers):
