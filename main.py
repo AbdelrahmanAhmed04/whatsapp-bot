@@ -87,7 +87,6 @@ def whatsapp_reply():
     message_body = request.form.get('Body')  # The content of the message (e.g., 'Tt')
     message_sid = request.form.get('MessageSid')  # Unique message SID
     profile_name = request.form.get('ProfileName')  # WhatsApp profile name (e.g., 'Bob')
-    message_status = request.form.get('SmsStatues')
 
     if "run algorithm send messages auto" in message_body:
 
@@ -103,7 +102,7 @@ def whatsapp_reply():
                     content_sid=offer_message,
                 )
                 log_message_in_dynamodb(number, "sent automated welcome message!", "outgoing", message.sid,
-                                        profile_name, to_number, message_status)
+                                        profile_name, to_number)
                 logging.info(f"Message sent to {number}")
 
         # Call the function to send messages
@@ -117,7 +116,7 @@ def whatsapp_reply():
         )
         # Log the greeting message in DynamoDB
         log_message_in_dynamodb(from_number, message_body, "incoming", message_sid, profile_name, to_number)
-        log_message_in_dynamodb(from_number, "Sent welcome mssage", "outgoing", message.sid, profile_name, to_number, message_status)
+        log_message_in_dynamodb(from_number, "Sent welcome mssage", "outgoing", message.sid, profile_name, to_number)
         time.sleep(2)
 
     list_id = request.form.get('ListId')
@@ -135,14 +134,14 @@ def whatsapp_reply():
             to=from_number,
             body=outgoing_body,
         )
-        log_message_in_dynamodb(from_number, outgoing_body, "outgoing", message.sid, profile_name, to_number, message_status)
+        log_message_in_dynamodb(from_number, outgoing_body, "outgoing", message.sid, profile_name, to_number)
     else:
         message = client.messages.create(
             from_="whatsapp:+18643873878",
             to=from_number,
             content_sid=offer_list,
         )
-        log_message_in_dynamodb(from_number, "Sent offer list", "outgoing", message.sid, profile_name, to_number, message_status)
+        log_message_in_dynamodb(from_number, "Sent offer list", "outgoing", message.sid, profile_name, to_number)
 
     return "Message sent", 200
 
