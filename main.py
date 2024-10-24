@@ -87,6 +87,8 @@ def whatsapp_reply():
     message_sid = request.form.get('MessageSid')  # Unique message SID
     profile_name = request.form.get('ProfileName')  # WhatsApp profile name (e.g., 'Bob')
 
+    log_message_in_dynamodb(from_number, message_body, "incoming", message_sid, profile_name, to_number)
+
     if "run algorithm send messages auto" in message_body:
 
         pattern = r'\+\d+'
