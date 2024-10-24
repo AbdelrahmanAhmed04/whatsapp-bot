@@ -1,14 +1,41 @@
+import os
+
+from dotenv import load_dotenv
+from fastapi import FastAPI, Request
+from starlette.responses import PlainTextResponse
 from twilio.rest import Client
 
-# Your Account SID and Auth Token from console.twilio.com
-account_sid = "AC9076f2e034e87ed36e71137fe8bc4ce9"
-auth_token  = "67c6417566a35b483a69adb7860b0942"
+import logging
 
-client = Client(account_sid, auth_token)
+from twilio.twiml.messaging_response import MessagingResponse
 
-client.messages.create(
-        from_="whatsapp:+18643873878",
-        body="Hello from Python!",
-        to= "whatsapp:+201000947764",
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    filename='app.log'
 )
-print("sent")
+logger = logging.getLogger(__name__)
+
+load_dotenv()
+
+ACCOUNT_SID=os.getenv('ACCOUNT_SID')
+AUTH_TOKEN=os.getenv('AUTH_TOKEN')
+client = Client(ACCOUNT_SID, AUTH_TOKEN)
+
+
+app = FastAPI()
+
+@app.post("/whatsapp", response_class=PlainTextResponse)
+async def receive_whatsapp(
+        request: Request,
+):
+    form = await request.form()
+    from_number = form.get('From')
+    body = form.get('Body')
+
+    logger.info(f'From: {from_number}, Body: {body}')
+
+    response = MessagingResponse()
+    response.message("received message")
+
+    return str(response)
