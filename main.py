@@ -100,6 +100,7 @@ def whatsapp_reply():
                     to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
                     content_sid=offer_message,
                 )
+                time.sleep(2)
                 log_message_in_dynamodb(number, "sent automated welcome message!", "outgoing", message.status + " " +message.sid,
                                         profile_name, to_number)
                 logging.info(f"Message sent to {number}")
@@ -133,6 +134,7 @@ def whatsapp_reply():
             to=from_number,
             body=outgoing_body,
         )
+        time.sleep(2)
         log_message_in_dynamodb(from_number, outgoing_body, "outgoing", message.status + " " +message.sid, profile_name, to_number)
     else:
         message = client.messages.create(
@@ -140,6 +142,7 @@ def whatsapp_reply():
             to=from_number,
             content_sid=offer_list,
         )
+        time.sleep(2)
         log_message_in_dynamodb(from_number, "Sent offer list", "outgoing", message.status + " " +message.sid, profile_name, to_number)
 
     return "Message sent", 200
