@@ -88,6 +88,9 @@ def whatsapp_reply():
     message_sid = request.form.get('MessageSid')  # Unique message SID
     profile_name = request.form.get('ProfileName')  # WhatsApp profile name (e.g., 'Bob')
     message_status = request.form.get('SmsStatus')
+    if not message_status:  # Fallback to another status parameter, if needed
+        message_status = request.form.get('SmsStatus', 'unknown')  # Default to 'unknown' if not found
+
 
     if "run algorithm send messages auto" in message_body:
 
