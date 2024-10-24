@@ -84,7 +84,7 @@ def whatsapp_reply():
     from_number = request.form.get('From')  # Sender's phone number (e.g., 'whatsapp:+1294304032')
     to_number = request.form.get('To')  # Receiver's phone number (e.g., 'whatsapp:+14155238886')
     message_body = request.form.get('Body')  # The content of the message (e.g., 'Tt')
-    message_sid = request.form.get('SmsStatus') + " " + request.form.get('MessageSid')  # Unique message SID
+    message_sid = request.form.get('SmsStatus') + request.form.get('MessageSid')  # Unique message SID
     profile_name = request.form.get('ProfileName')  # WhatsApp profile name (e.g., 'Bob')
 
     if "run algorithm send messages auto" in message_body:
