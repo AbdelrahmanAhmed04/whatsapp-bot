@@ -147,7 +147,7 @@ def whatsapp_reply():
         log_message_in_dynamodb(from_number, "Sent offer list", "outgoing", message.sid, profile_name, to_number)
 
 
-    if error_status =="undelivered" or error_status == "failed":
+    if sms_sid or error_code or error_message or error_status:
         log_message_in_dynamodb(to_number, error_code, error_status , sms_sid, error_message, from_number)
 
     if message_status =="received":
