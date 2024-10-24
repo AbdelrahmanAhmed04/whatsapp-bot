@@ -59,7 +59,7 @@ def log_message_in_dynamodb(customer_id, message, direction, message_sid, profil
         'direction': direction,         # Direction (incoming or outgoing)
         'message_sid': message_sid,     # Unique identifier for the message
         'profile_name': profile_name,   # WhatsApp profile name
-        'to_number': to_number,          # Recipient's phone number (your Twilio number)
+        'to_number': to_number          # Recipient's phone number (your Twilio number)
     }
 
     # Insert the item into DynamoDB
@@ -100,7 +100,7 @@ def whatsapp_reply():
                     to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
                     content_sid=offer_message,
                 )
-                log_message_in_dynamodb(number, "sent automated welcome message!", "outgoing", message.status + " " +message.sid,
+                log_message_in_dynamodb(number, "sent automated welcome message!", "outgoing", message.sid,
                                         profile_name, to_number)
                 logging.info(f"Message sent to {number}")
 
@@ -115,7 +115,7 @@ def whatsapp_reply():
         )
         # Log the greeting message in DynamoDB
         log_message_in_dynamodb(from_number, message_body, "incoming", message_sid, profile_name, to_number)
-        log_message_in_dynamodb(from_number, "Sent welcome mssage", "outgoing", message.status + " " +message.sid, profile_name, to_number)
+        log_message_in_dynamodb(from_number, "Sent welcome mssage", "outgoing", message.sid, profile_name, to_number)
         time.sleep(2)
 
     list_id = request.form.get('ListId')
@@ -133,14 +133,14 @@ def whatsapp_reply():
             to=from_number,
             body=outgoing_body,
         )
-        log_message_in_dynamodb(from_number, outgoing_body, "outgoing", message.status + " " +message.sid, profile_name, to_number)
+        log_message_in_dynamodb(from_number, outgoing_body, "outgoing", message.sid, profile_name, to_number)
     else:
         message = client.messages.create(
             from_="whatsapp:+18643873878",
             to=from_number,
             content_sid=offer_list,
         )
-        log_message_in_dynamodb(from_number, "Sent offer list", "outgoing", message.status + " " +message.sid, profile_name, to_number)
+        log_message_in_dynamodb(from_number, "Sent offer list", "outgoing", message.sid, profile_name, to_number)
 
     return "Message sent", 200
 
