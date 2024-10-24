@@ -84,7 +84,7 @@ def whatsapp_reply():
     from_number = request.form.get('From')  # Sender's phone number (e.g., 'whatsapp:+1294304032')
     to_number = request.form.get('To')  # Receiver's phone number (e.g., 'whatsapp:+14155238886')
     message_body = request.form.get('Body')  # The content of the message (e.g., 'Tt')
-    message_sid = request.form.get('MessageSid') + request.form.get('SmsStatus')  # Unique message SID
+    message_sid = request.form.get('SmsStatus') + " " +request.form.get('MessageSid')  # Unique message SID
     profile_name = request.form.get('ProfileName')  # WhatsApp profile name (e.g., 'Bob')
 
     if "run algorithm send messages auto" in message_body:
@@ -100,7 +100,7 @@ def whatsapp_reply():
                     to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
                     content_sid=offer_message,
                 )
-                log_message_in_dynamodb(number, "sent automated welcome message!", "outgoing", message.sid,
+                log_message_in_dynamodb(number, "sent automated welcome message!", "outgoing", message.status + " " +message.sid,
                                         profile_name, to_number)
                 logging.info(f"Message sent to {number}")
 
@@ -115,7 +115,7 @@ def whatsapp_reply():
         )
         # Log the greeting message in DynamoDB
         log_message_in_dynamodb(from_number, message_body, "incoming", message_sid, profile_name, to_number)
-        log_message_in_dynamodb(from_number, "Sent welcome mssage", "outgoing", message.sid, profile_name, to_number)
+        log_message_in_dynamodb(from_number, "Sent welcome mssage", "outgoing", message.status + " " +message.sid, profile_name, to_number)
         time.sleep(2)
 
     list_id = request.form.get('ListId')
@@ -133,14 +133,14 @@ def whatsapp_reply():
             to=from_number,
             body=outgoing_body,
         )
-        log_message_in_dynamodb(from_number, outgoing_body, "outgoing", message.sid, profile_name, to_number)
+        log_message_in_dynamodb(from_number, outgoing_body, "outgoing", message.status + " " +message.sid, profile_name, to_number)
     else:
         message = client.messages.create(
             from_="whatsapp:+18643873878",
             to=from_number,
             content_sid=offer_list,
         )
-        log_message_in_dynamodb(from_number, "Sent offer list", "outgoing", message.sid, profile_name, to_number)
+        log_message_in_dynamodb(from_number, "Sent offer list", "outgoing", message.status + " " +message.sid, profile_name, to_number)
 
     return "Message sent", 200
 
