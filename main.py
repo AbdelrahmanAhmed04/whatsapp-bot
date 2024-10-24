@@ -149,7 +149,7 @@ def whatsapp_reply():
         log_message_in_dynamodb(to_number, error_code, message_status , message_sid, error_message, from_number)
 
     if message_status =="received":
-        log_message_in_dynamodb(from_number, message_body, "outgoing", message.sid, profile_name, to_number)
+        log_message_in_dynamodb(from_number, message_body, "incoming", message.sid, profile_name, to_number)
     
     return "Message sent", 200
 
