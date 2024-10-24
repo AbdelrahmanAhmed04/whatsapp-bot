@@ -86,7 +86,7 @@ def whatsapp_reply():
     message_body = request.form.get('Body')  # The content of the message (e.g., 'Tt')
     message_sid = request.form.get('MessageSid')  # Unique message SID
     profile_name = request.form.get('ProfileName')  # WhatsApp profile name (e.g., 'Bob')
-
+    message_statues = request.form.get('SmsStatus') 
     log_message_in_dynamodb(from_number, message_body, "incoming", message_sid, profile_name, to_number)
 
     if "run algorithm send messages auto" in message_body:
@@ -117,8 +117,6 @@ def whatsapp_reply():
         )
         # Log the greeting message in DynamoDB
         log_message_in_dynamodb(from_number, message_body, "incoming", message_sid, profile_name, to_number)
-        log_message_in_dynamodb(from_number, "Sent welcome mssage", "outgoing", message.sid, profile_name, to_number)
-        time.sleep(2)
 
     list_id = request.form.get('ListId')
 
