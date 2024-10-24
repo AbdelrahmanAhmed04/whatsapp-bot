@@ -86,8 +86,12 @@ def whatsapp_reply():
     message_body = request.form.get('Body')  # The content of the message (e.g., 'Tt')
     message_sid = request.form.get('MessageSid')  # Unique message SID
     profile_name = request.form.get('ProfileName')  # WhatsApp profile name (e.g., 'Bob')
-    message_statues = request.form.get('SmsStatus') 
-    log_message_in_dynamodb(from_number, message_body, message_statues + " incoming" , message_sid, profile_name, to_number)
+    message_status = request.form.get('SmsStatus')
+    error_code = request.form.get('ErrorCode')
+    error_message = request.form.get('ErrorMessage')
+
+    if message_status =="undelivered" or message_status == "failed":
+        log_message_in_dynamodb(to_number, error_code, message_status , message_sid, error_message, from_number)
 
     if "run algorithm send messages auto" in message_body:
 
