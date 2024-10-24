@@ -93,6 +93,9 @@ def whatsapp_reply():
     if message_status =="undelivered" or message_status == "failed":
         log_message_in_dynamodb(to_number, error_code, message_status , message_sid, error_message, from_number)
 
+    if message_status =="sent":
+        log_message_in_dynamodb(from_number, outgoing_body, "outgoing", message.sid, profile_name, to_number)
+
     if "run algorithm send messages auto" in message_body:
 
         pattern = r'\+\d+'
