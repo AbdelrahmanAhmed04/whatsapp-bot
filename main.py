@@ -123,8 +123,9 @@ def whatsapp_reply():
             content_sid=offer_message,
         )
         # Log the greeting message in DynamoDB
-        log_message_in_dynamodb(from_number, message_body, "incoming", message_sid, profile_name, to_number)
-
+        log_message_in_dynamodb(from_number, outgoing_body, "outgoing", message_sid, profile_name, to_number)
+    
+    time.sleep(2)
     list_id = request.form.get('ListId')
 
     if list_id == '1':
