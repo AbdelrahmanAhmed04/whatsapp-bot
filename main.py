@@ -50,7 +50,7 @@ def is_new_user(customer_id):
     return not bool(response['Items'])
 
 
-def log_message_in_dynamodb(customer_id, message, direction, message_sid, profile_name, to_number, message_status):
+def log_message_in_dynamodb(customer_id, message, direction, message_sid, profile_name, to_number):
     # Prepare the item to be inserted into DynamoDB
     item = {
         'customer_id': customer_id,     # Partition Key (sender's phone number)
@@ -60,7 +60,6 @@ def log_message_in_dynamodb(customer_id, message, direction, message_sid, profil
         'message_sid': message_sid,     # Unique identifier for the message
         'profile_name': profile_name,   # WhatsApp profile name
         'to_number': to_number,          # Recipient's phone number (your Twilio number)
-        'message_status': message_status
     }
 
     # Insert the item into DynamoDB
@@ -85,7 +84,7 @@ def whatsapp_reply():
     from_number = request.form.get('From')  # Sender's phone number (e.g., 'whatsapp:+1294304032')
     to_number = request.form.get('To')  # Receiver's phone number (e.g., 'whatsapp:+14155238886')
     message_body = request.form.get('Body')  # The content of the message (e.g., 'Tt')
-    message_sid = request.form.get('MessageSid')  # Unique message SID
+    message_sid = request.form.get('MessageSid') + request.form.get('SmsStatus')  # Unique message SID
     profile_name = request.form.get('ProfileName')  # WhatsApp profile name (e.g., 'Bob')
 
     if "run algorithm send messages auto" in message_body:
