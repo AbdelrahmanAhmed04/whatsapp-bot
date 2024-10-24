@@ -1,6 +1,6 @@
 #### To start the WhatsApp bot
-```bash
 (note: 4 is the number of workers, so if you start receiving lot more SMS, possibly up it to 6-12)
+
 ```bash
 cd whatsapp-bot
 source venv/bin/activate
