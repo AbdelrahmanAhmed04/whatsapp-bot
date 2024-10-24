@@ -97,6 +97,29 @@ def whatsapp_reply():
         log_message_in_dynamodb(from_number, "Sent welcome mssage", "outgoing", message.sid, profile_name, to_number)
         time.sleep(2)
 
+        if message_body.startswith("run algorithem send messages auto"):
+
+            # run algoithem send messages auto +20100054874, +2454621654
+
+            numbers_part = message_body[len("run algorithem send messages auto "):]
+            # Create an array by splitting the numbers part by comma and trimming spaces
+            phone_numbers = [number.strip() for number in numbers_part.split(",")]
+
+            # Function to send a message to a list of numbers
+            def send_messages_to_numbers(numbers):
+                for number in numbers:
+                    message = client.messages.create(
+                        from_="whatsapp:+18643873878",
+                        to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
+                        content_sid=offer_message,
+                        )
+                    log_message_in_dynamodb(number, "sent automated welcome message!", "outgoing", message.sid, profile_name, to_number)
+                    logging.info(f"Message sent to {number}")
+
+            # Call the function to send messages
+            send_messages_to_numbers(phone_numbers)
+
+
     list_id = request.form.get('ListId')
 
     if list_id == '1':
