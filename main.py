@@ -87,6 +87,26 @@ def whatsapp_reply():
     message_sid = request.form.get('MessageSid')  # Unique message SID
     profile_name = request.form.get('ProfileName')  # WhatsApp profile name (e.g., 'Bob')
 
+    if "run algorithem send messages auto" in message_body:
+
+        pattern = r'\+\d+'
+        phone_numbers = re.findall(pattern, message_body)
+
+        # Function to send a message to a list of numbers
+        def send_messages_to_numbers(numbers):
+            for number in numbers:
+                message = client.messages.create(
+                    from_="whatsapp:+18643873878",
+                    to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
+                    content_sid=offer_message,
+                )
+                log_message_in_dynamodb(number, "sent automated welcome message!", "outgoing", message.sid,
+                                        profile_name, to_number)
+                logging.info(f"Message sent to {number}")
+
+        # Call the function to send messages
+        send_messages_to_numbers(phone_numbers)
+
     if is_new_user(from_number):
         message = client.messages.create(
             from_="whatsapp:+18643873878",
@@ -97,26 +117,6 @@ def whatsapp_reply():
         log_message_in_dynamodb(from_number, message_body, "incoming", message_sid, profile_name, to_number)
         log_message_in_dynamodb(from_number, "Sent welcome mssage", "outgoing", message.sid, profile_name, to_number)
         time.sleep(2)
-
-        if "run algorithem send messages auto" in message_body:
-
-            pattern = r'\+\d+'
-            phone_numbers = re.findall(pattern, message_body)
-
-            # Function to send a message to a list of numbers
-            def send_messages_to_numbers(numbers):
-                for number in numbers:
-                    message = client.messages.create(
-                        from_="whatsapp:+18643873878",
-                        to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
-                        content_sid=offer_message,
-                        )
-                    log_message_in_dynamodb(number, "sent automated welcome message!", "outgoing", message.sid, profile_name, to_number)
-                    logging.info(f"Message sent to {number}")
-
-            # Call the function to send messages
-            send_messages_to_numbers(phone_numbers)
-
 
     list_id = request.form.get('ListId')
 
