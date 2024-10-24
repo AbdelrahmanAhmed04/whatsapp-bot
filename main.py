@@ -87,7 +87,7 @@ def whatsapp_reply():
     message_sid = request.form.get('MessageSid')  # Unique message SID
     profile_name = request.form.get('ProfileName')  # WhatsApp profile name (e.g., 'Bob')
 
-    if "run algorithem send messages auto" in message_body:
+    if "run algorithm send messages auto" in message_body:
 
         pattern = r'\+\d+'
         phone_numbers = re.findall(pattern, message_body)
