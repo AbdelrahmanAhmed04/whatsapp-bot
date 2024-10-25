@@ -111,12 +111,33 @@ def whatsapp_reply():
 
         # Call the function to send messages
         send_messages_to_numbers(phone_numbers)
+    
+    if "send custom message to number" in message_body:
+
+        def process_custom_message(message_body):
+            # Regular expression to extract phone number and message
+            pattern = r"send custom message to number (\+\d+)\s(.+)"
+            match = re.match(pattern, message_body)
+
+            phone_number = match.group(1)
+            custom_message = match.group(2)
+
+            client.messages.create(
+                from_="whatsapp:+18643873878",
+                to=f"whatsapp:{phone_number}",  # Each number should be prefixed with 'whatsapp:'
+                body=custom_message,
+            )
+            log_message_in_dynamodb(phone_number, "sent manual message", "outgoing", message_sid, profile_name, to_number)
+        process_custom_message(message_body)
+        # Send the message via Twilio
+        
+            
 
     if is_new_user(from_number):
         message = client.messages.create(
             from_="whatsapp:+18643873878",
             to=from_number,
-            content_sid=offer_message,
+            body=offer_message,
         )
         # Log the greeting message in DynamoDB
         log_message_in_dynamodb(from_number, "sent welcome message", "outgoing", message_sid, profile_name, to_number)
