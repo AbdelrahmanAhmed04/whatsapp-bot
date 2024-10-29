@@ -75,11 +75,11 @@ def log_message_in_dynamodb(customer_id, message, direction, message_sid, profil
     logging.info(f"{direction.capitalize()} message from {customer_id} logged to DynamoDB.")
 
 
-def send_template_message(content_sid, from_number):
+def send_template_message(template_id, phone_number):
     message = client.messages.create(
         from_="whatsapp:+18643873878",
-        to=from_number,
-        content_sid=content_sid,
+        to=phone_number,
+        content_sid=template_id,
     )
 
 
