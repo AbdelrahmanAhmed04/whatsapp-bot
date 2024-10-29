@@ -177,7 +177,7 @@ def whatsapp_reply():
         )
         log_message_in_dynamodb(from_number, "Check casino 888 registration", "outgoing", message.sid, profile_name, to_number)
 
-    elif list_id == "liked first casino 888" or list_id == "liked second casino betfinal":
+    elif list_id == "liked first casino 888":
      message = client.messages.create(
         from_="whatsapp:+18643873878",
         to=from_number,
@@ -199,6 +199,12 @@ def whatsapp_reply():
         content_sid=betfinal_check_registration
         )        
         log_message_in_dynamodb(from_number, "Check casino betfinal registration", "outgoing", message.sid, profile_name, to_number)
+    elif list_id == "liked second casino betfinal":
+     message = client.messages.create(
+        from_="whatsapp:+18643873878",
+        to=from_number,
+        content_sid=registration_success_followup
+        )   
     elif list_id == "didn't liked second casino betfinal":
         message = client.messages.create(
             from_="whatsapp:+18643873878",
