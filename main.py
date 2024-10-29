@@ -170,7 +170,7 @@ def whatsapp_reply():
     elif list_id == "2":
         send_template_message(casino_888_offer ,from_number)        
         log_message_in_dynamodb(from_number, "Sent Casino 888 offer", "outgoing", message.sid, profile_name, to_number)
-        time.delay(2)
+        time.sleep(2)
         send_template_message(casino_888_check_registration ,from_number)
         log_message_in_dynamodb(from_number, "Check casino 888 registration", "outgoing", message.sid, profile_name, to_number)
 
@@ -181,7 +181,7 @@ def whatsapp_reply():
     elif list_id == "didn't liked first casino 888":
         send_template_message(betinal_offer,from_number)    
         log_message_in_dynamodb(from_number, "Sent Casino betfinal offer", "outgoing", message.sid, profile_name, to_number)
-        time.delay(2)
+        time.sleep(2)
         send_template_message(betfinal_check_registration ,from_number)
         log_message_in_dynamodb(from_number, "Check casino betfinal registration", "outgoing", message.sid, profile_name, to_number)
     elif list_id == "didn't liked second casino betfinal":
