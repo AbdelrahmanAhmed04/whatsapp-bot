@@ -75,12 +75,7 @@ def log_message_in_dynamodb(customer_id, message, direction, message_sid, profil
     logging.info(f"{direction.capitalize()} message from {customer_id} logged to DynamoDB.")
 
 
-def send_template_message(template_id, phone_number):
-    message = client.messages.create(
-        from_="whatsapp:+18643873878",
-        to=phone_number,
-        content_sid=template_id,
-    )
+
 
 
 @app.route("/whatsapp", methods=['POST'])
@@ -183,14 +178,26 @@ def whatsapp_reply():
         log_message_in_dynamodb(from_number, "Check casino 888 registration", "outgoing", message.sid, profile_name, to_number)
 
     elif list_id == "liked first casino 888" or list_id == "liked second casino betfinal":
-        send_template_message(registration_success_followup ,from_number)    
-        log_message_in_dynamodb(from_number, list, "outgoing", message.sid, profile_name, to_number)
+     message = client.messages.create(
+        from_="whatsapp:+18643873878",
+        to=from_number,
+        content_sid=registration_success_followup
+        )        
+     log_message_in_dynamodb(from_number, list, "outgoing", message.sid, profile_name, to_number)
     
     elif list_id == "didn't liked first casino 888":
-        send_template_message(betinal_offer,from_number)    
+        message = client.messages.create(
+        from_="whatsapp:+18643873878",
+        to=from_number,
+        content_sid=betinal_offer
+        )
         log_message_in_dynamodb(from_number, "Sent Casino betfinal offer", "outgoing", message.sid, profile_name, to_number)
         time.sleep(2)
-        send_template_message(betfinal_check_registration ,from_number)
+        message = client.messages.create(
+        from_="whatsapp:+18643873878",
+        to=from_number,
+        content_sid=betfinal_check_registration
+        )        
         log_message_in_dynamodb(from_number, "Check casino betfinal registration", "outgoing", message.sid, profile_name, to_number)
     elif list_id == "didn't liked second casino betfinal":
         message = client.messages.create(
