@@ -2,6 +2,8 @@ import os
 import re
 import time
 from datetime import datetime
+import schedule
+import time
 
 import boto3
 from boto3.dynamodb.conditions import Key
@@ -26,9 +28,15 @@ aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
 aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
 aws_region = 'us-east-2'
 
-offer_message = "HXbe7bee6c57059a6db3c916ee3bd8ee49"
-offer_list = "HXc1fc035b2d18fd509cdfec11c42ed0dc"
 
+#Content template SIDs
+offer_message = "HXa2fee0b7ea14d1e8439c12f3cdf89738"
+offer_list = "HXc1fc035b2d18fd509cdfec11c42ed0dc"
+betfinal_check_registration = "HX218d8de3f93f3e050264272c496bbd5e"
+casino_888_check_registration = "HX84da6ba9ab8b2e5d7a17fa8223a9583a"
+betinal_offer = "HXaef0a489a0439eb52b98ebd204234ae3"
+registration_success_followup = "HX41554486f2e99df288ff117777f1e2a9"
+casino_888_offer = "HXe0d3ebb6249757ea114d7e5eeefea201"
 
 # Initialize DynamoDB resource with credentials
 dynamodb = boto3.resource(
@@ -75,6 +83,13 @@ def is_new_user(customer_id):
     )
     return not bool(response['Items'])
 
+def send_template_message(content_sid, from_number):
+    message = client.messages.create(
+        from_="whatsapp:+18643873878",
+        to=from_number,
+        content_sid=content_sid,
+    )
+
 
 @app.route("/whatsapp", methods=['POST'])
 def whatsapp_reply():
@@ -87,11 +102,15 @@ def whatsapp_reply():
     message_sid = request.form.get('MessageSid')  # Unique message SID
     profile_name = request.form.get('ProfileName')  # WhatsApp profile name (e.g., 'Bob')
     message_status = request.form.get('SmsStatus')
+    list_id = request.form.get('ListId')
     error_code = request.form.get('ErrorCode')
     error_message = request.form.get('ErrorMessage')
     error_status = request.form.get('MessageStatus')
     sms_sid = request.form.get('SmsSid')
     
+
+####SETTING UP CUSTOM COMMANDS####
+
     if "run algorithm send messages auto" in message_body:
 
         pattern = r'\+\d+'
@@ -131,7 +150,8 @@ def whatsapp_reply():
         process_custom_message(message_body)
         # Send the message via Twilio
         
-            
+####CUSTOM COMMANDS DONE####
+
 
     if is_new_user(from_number):
         message = client.messages.create(
@@ -139,33 +159,48 @@ def whatsapp_reply():
             to=from_number,
             body=offer_message,
         )
-        # Log the greeting message in DynamoDB
-        log_message_in_dynamodb(from_number, "sent welcome message", "outgoing", message_sid, profile_name, to_number)
-        time.sleep(2)
-
-    list_id = request.form.get('ListId')
-
-    if list_id == '1':
-        outgoing_body = "احد خبرائنا سيتواصلون معك في اسرع وقت"
-    elif list_id == '2':
-        outgoing_body = "إليك لينك العلاوة"
-    else:
-        outgoing_body = None
-
-    if outgoing_body:
-        message = client.messages.create(
-            from_="whatsapp:+18643873878",
-            to=from_number,
-            body=outgoing_body,
-        )
-        log_message_in_dynamodb(from_number, outgoing_body, "outgoing", message.sid, profile_name, to_number)
-    else:
-        message = client.messages.create(
+        client.messages.create(
             from_="whatsapp:+18643873878",
             to=from_number,
             content_sid=offer_list,
         )
-        log_message_in_dynamodb(from_number, "Sent offer list", "outgoing", message.sid, profile_name, to_number)
+        # Log the greeting message in DynamoDB
+        log_message_in_dynamodb(from_number, "sent welcome message and offer list", "outgoing", message_sid, profile_name, to_number)
+
+
+    if list_id == "1":
+        message = client.messages.create(
+            from_="whatsapp:+18643873878",
+            to=from_number,
+            body="احد خبرائنا سيتواصلون معك في اسرع وقت",
+        )
+        log_message_in_dynamodb(from_number, "One of our agents will contact you", "outgoing", message.sid, profile_name, to_number)
+    elif list_id == "2":
+        send_template_message(casino_888_offer ,from_number)        
+        log_message_in_dynamodb(from_number, "Sent Casino 888 offer", "outgoing", message.sid, profile_name, to_number)
+
+        time.sleep(120)
+
+        send_template_message(casino_888_check_registration ,from_number)
+        log_message_in_dynamodb(from_number, "Check casino 888 registration", "outgoing", message.sid, profile_name, to_number)
+
+    elif list == "liked first casino 888" or list == "liked second casino betfinal":
+        send_template_message(registration_success_followup ,from_number)    
+        log_message_in_dynamodb(from_number, list, "outgoing", message.sid, profile_name, to_number)
+    
+    elif list == "didn't liked first casino 888":
+        send_template_message(betinal_offer,from_number)    
+        log_message_in_dynamodb(from_number, "Sent Casino betfinal offer", "outgoing", message.sid, profile_name, to_number)
+
+        time.sleep(120)
+        send_template_message(betfinal_check_registration ,from_number)
+        log_message_in_dynamodb(from_number, "Check casino betfinal registration", "outgoing", message.sid, profile_name, to_number)
+    elif list == "didn't liked second casino betfinal":
+        message = client.messages.create(
+            from_="whatsapp:+18643873878",
+            to=from_number,
+            body="احد خبرائنا سيتواصلون معك في اسرع وقت",
+        )
 
 
     # if sms_sid or error_code or error_message or error_status:
