@@ -168,10 +168,18 @@ def whatsapp_reply():
         )
         log_message_in_dynamodb(from_number, "One of our agents will contact you", "outgoing", message.sid, profile_name, to_number)
     elif list_id == "2":
-        send_template_message(casino_888_offer ,from_number)        
+        message = client.messages.create(
+        from_="whatsapp:+18643873878",
+        to=from_number,
+        content_sid=casino_888_offer
+        )        
         log_message_in_dynamodb(from_number, "Sent Casino 888 offer", "outgoing", message.sid, profile_name, to_number)
         time.sleep(2)
-        send_template_message(casino_888_check_registration ,from_number)
+        message = client.messages.create(
+        from_="whatsapp:+18643873878",
+        to=from_number,
+        content_sid=casino_888_check_registration
+        )
         log_message_in_dynamodb(from_number, "Check casino 888 registration", "outgoing", message.sid, profile_name, to_number)
 
     elif list_id == "liked first casino 888" or list_id == "liked second casino betfinal":
