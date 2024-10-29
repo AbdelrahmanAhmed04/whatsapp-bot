@@ -2,8 +2,6 @@ import os
 import re
 import time
 from datetime import datetime
-import schedule
-import time
 
 import boto3
 from boto3.dynamodb.conditions import Key
@@ -76,12 +74,6 @@ def log_message_in_dynamodb(customer_id, message, direction, message_sid, profil
     # Log success
     logging.info(f"{direction.capitalize()} message from {customer_id} logged to DynamoDB.")
 
-def is_new_user(customer_id):
-    # Query DynamoDB to check if the user exists
-    response = table.query(
-        KeyConditionExpression=Key('customer_id').eq(customer_id)
-    )
-    return not bool(response['Items'])
 
 def send_template_message(content_sid, from_number):
     message = client.messages.create(
@@ -179,23 +171,20 @@ def whatsapp_reply():
         send_template_message(casino_888_offer ,from_number)        
         log_message_in_dynamodb(from_number, "Sent Casino 888 offer", "outgoing", message.sid, profile_name, to_number)
 
-        time.sleep(120)
-
         send_template_message(casino_888_check_registration ,from_number)
         log_message_in_dynamodb(from_number, "Check casino 888 registration", "outgoing", message.sid, profile_name, to_number)
 
-    elif list == "liked first casino 888" or list == "liked second casino betfinal":
+    elif list_id == "liked first casino 888" or list_id == "liked second casino betfinal":
         send_template_message(registration_success_followup ,from_number)    
         log_message_in_dynamodb(from_number, list, "outgoing", message.sid, profile_name, to_number)
     
-    elif list == "didn't liked first casino 888":
+    elif list_id == "didn't liked first casino 888":
         send_template_message(betinal_offer,from_number)    
         log_message_in_dynamodb(from_number, "Sent Casino betfinal offer", "outgoing", message.sid, profile_name, to_number)
 
-        time.sleep(120)
         send_template_message(betfinal_check_registration ,from_number)
         log_message_in_dynamodb(from_number, "Check casino betfinal registration", "outgoing", message.sid, profile_name, to_number)
-    elif list == "didn't liked second casino betfinal":
+    elif list_id == "didn't liked second casino betfinal":
         message = client.messages.create(
             from_="whatsapp:+18643873878",
             to=from_number,
