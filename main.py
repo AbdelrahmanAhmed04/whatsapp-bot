@@ -88,7 +88,7 @@ def whatsapp_reply():
     message_body = request.form.get('Body')  # The content of the message (e.g., 'Tt')
     message_sid = request.form.get('MessageSid')  # Unique message SID
     profile_name = request.form.get('ProfileName')  # WhatsApp profile name (e.g., 'Bob')
-    message_status = request.form.get('Status')
+    message_status = request.form.get('SmsStatus')
     list_id = request.form.get('ListId')
     error_code = request.form.get('ErrorCode')
     error_message = request.form.get('ErrorMessage')
@@ -220,7 +220,7 @@ def whatsapp_reply():
     # if sms_sid or error_code or error_message or error_status:
     #     log_message_in_dynamodb(to_number, error_code, error_status , sms_sid, error_message, from_number)
 
-    if message_status =="received":
+    if message_status =='received':
         log_message_in_dynamodb(from_number, message_body, "incoming", message.sid, profile_name, to_number)
 
     return "Message sent", 200
