@@ -104,19 +104,16 @@ def whatsapp_reply():
         phone_numbers = re.findall(pattern, message_body)
 
         # Function to send a message to a list of numbers
-        def send_messages_to_numbers(numbers):
-            for number in numbers:
-                message = client.messages.create(
-                    from_="whatsapp:+18643873878",
-                    to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
-                    content_sid=offer_message,
-                )
-                log_message_in_dynamodb(number, "sent automated welcome message!", "outgoing", message.sid,
+        for number in phone_numbers:
+            message = client.messages.create(
+                from_="whatsapp:+18643873878",
+                to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
+                content_sid=offer_message,
+            )
+            log_message_in_dynamodb(number, "sent automated welcome message!", "outgoing", message.sid,
                                         profile_name, to_number)
-                logging.info(f"Message sent to {number}")
+            logging.info(f"Message sent to {number}")
 
-        # Call the function to send messages
-        send_messages_to_numbers(phone_numbers)
     
     if "send custom message to number" in message_body:
 
