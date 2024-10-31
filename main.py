@@ -88,7 +88,7 @@ def whatsapp_reply():
     message_body = request.form.get('Body')  # The content of the message (e.g., 'Tt')
     message_sid = request.form.get('MessageSid')  # Unique message SID
     profile_name = request.form.get('ProfileName')  # WhatsApp profile name (e.g., 'Bob')
-    message_status = request.form.get('SmsStatus')
+    message_status = request.form.get('Status')
     list_id = request.form.get('ListId')
     error_code = request.form.get('ErrorCode')
     error_message = request.form.get('ErrorMessage')
