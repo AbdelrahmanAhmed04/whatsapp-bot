@@ -99,24 +99,22 @@ def whatsapp_reply():
 ####SETTING UP CUSTOM COMMANDS####
 
     if "run algorithm send messages auto" in message_body:
-
+        logging.info("Received 'run algorithm send messages auto' command")
         pattern = r'\+\d+'
         phone_numbers = re.findall(pattern, message_body)
 
         # Function to send a message to a list of numbers
-        def send_messages_to_numbers(numbers):
-            for number in numbers:
-                message = client.messages.create(
-                    from_="whatsapp:+18643873878",
-                    to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
-                    content_sid=offer_message,
-                )
-                log_message_in_dynamodb(number, "sent automated welcome message!", "outgoing", message.sid,
+        for number in numbers:
+            message = client.messages.create(
+                from_="whatsapp:+18643873878",
+                to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
+                content_sid=offer_message,
+            )
+            log_message_in_dynamodb(number, "sent automated welcome message!", "outgoing", message.sid,
                                         profile_name, to_number)
-                logging.info(f"Message sent to {number}")
+            logging.info(f"Message sent to {number}")
 
         # Call the function to send messages
-        send_messages_to_numbers(phone_numbers)
     
     if "send custom message to number" in message_body:
 
@@ -219,7 +217,7 @@ def whatsapp_reply():
     #     log_message_in_dynamodb(to_number, error_code, error_status , sms_sid, error_message, from_number)
 
     if message_status =="received":
-        log_message_in_dynamodb(from_number, message_body, "incoming", message.sid, profile_name, to_number)
+        log_message_in_dynamodb(from_number, message_body, "incoming", message_sid, profile_name, to_number)
 
     return "Message sent", 200
 
