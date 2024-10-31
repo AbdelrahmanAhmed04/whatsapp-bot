@@ -111,7 +111,6 @@ def whatsapp_reply():
                     to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
                     content_sid=offer_message,
                 )
-                time.sleep(1)
                 message = client.messages.create(
                     from_="whatsapp:+18643873878",
                     to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
