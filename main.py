@@ -142,6 +142,7 @@ def whatsapp_reply():
 
     if "send 888 offer" in message_body:
 
+        def process_888_message(message_body):
             # Regular expression to extract phone number and message
             pattern = r"send 888 offer (\+\d+)\s(.+)"
             match = re.match(pattern, message_body)
@@ -153,11 +154,14 @@ def whatsapp_reply():
                 to=f"whatsapp:{phone_number}",  # Each number should be prefixed with 'whatsapp:'
                 content_sid=casino_888_offer,
             )
-            log_message_in_dynamodb(phone_number, "sent manual message", "outgoing", message_sid, profile_name, to_number)
+            log_message_in_dynamodb(phone_number, "Sent 888 offer message", "outgoing", message_sid, profile_name, to_number)
+        process_888_message(message_body)
+
         # Send the message via Twilio
 
     if "send betfinal offer" in message_body:
 
+        def process_betfinal_message(message_body):
             # Regular expression to extract phone number and message
             pattern = r"send betfinal offer (\+\d+)\s(.+)"
             match = re.match(pattern, message_body)
@@ -169,7 +173,8 @@ def whatsapp_reply():
                 to=f"whatsapp:{phone_number}",  # Each number should be prefixed with 'whatsapp:'
                 content_sid=betinal_offer,
             )
-            log_message_in_dynamodb(phone_number, "sent manual message", "outgoing", message_sid, profile_name, to_number)
+            log_message_in_dynamodb(phone_number, "sent betfinal offer message", "outgoing", message_sid, profile_name, to_number)
+        process_betfinal_message(message_body)
         # Send the message via Twilio
         
 ####CUSTOM COMMANDS DONE####
