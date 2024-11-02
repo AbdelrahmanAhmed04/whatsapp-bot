@@ -123,7 +123,6 @@ def whatsapp_reply():
     
     if "send custom message to number" in message_body:
 
-        def process_custom_message(message_body):
             # Regular expression to extract phone number and message
             pattern = r"send custom message to number (\+\d+)\s(.+)"
             match = re.match(pattern, message_body)
@@ -137,7 +136,6 @@ def whatsapp_reply():
                 body=custom_message,
             )
             log_message_in_dynamodb(phone_number, "sent manual message to " + phone_number, "outgoing", message_sid, to_number)
-        process_custom_message(message_body)
         # Send the message via Twilio
 
     if "send 888 offer message" in message_body:
