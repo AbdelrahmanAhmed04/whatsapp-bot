@@ -140,41 +140,49 @@ def whatsapp_reply():
         process_custom_message(message_body)
         # Send the message via Twilio
 
-    if "send 888 offer" in message_body:
+    if "send 888 offer message" in message_body:
 
-        def process_888_message(message_body):
-            # Regular expression to extract phone number and message
-            pattern = r"send 888 offer (\+\d+)\s(.+)"
-            match = re.match(pattern, message_body)
+        pattern = r'\+\d+'
+        phone_numbers = re.findall(pattern, message_body)
 
-            phone_number = match.group(1)
-
-            client.messages.create(
+        # Function to send a message to a list of numbers
+        for number in phone_numbers:
+            message = client.messages.create(
                 from_="whatsapp:+18643873878",
-                to=f"whatsapp:{phone_number}",  # Each number should be prefixed with 'whatsapp:'
+                to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
                 content_sid=casino_888_offer,
             )
-            log_message_in_dynamodb(phone_number, "Sent 888 offer message", "outgoing", message_sid, profile_name, to_number)
-        process_888_message(message_body)
-
-        # Send the message via Twilio
-
-    if "send betfinal offer" in message_body:
-
-        def process_betfinal_message(message_body):
-            # Regular expression to extract phone number and message
-            pattern = r"send betfinal offer (\+\d+)\s(.+)"
-            match = re.match(pattern, message_body)
-
-            phone_number = match.group(1)
-
-            client.messages.create(
+            time.sleep(1)
+            message = client.messages.create(
                 from_="whatsapp:+18643873878",
-                to=f"whatsapp:{phone_number}",  # Each number should be prefixed with 'whatsapp:'
+                to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
+                content_sid=casino_888_check_registration,
+            )
+            log_message_in_dynamodb(number, "sent 888 casino offer", "outgoing", message.sid,
+                                        profile_name, to_number)
+            logging.info(f"Message sent to {number}")
+
+    if "send betfinal offer message" in message_body:
+
+        pattern = r'\+\d+'
+        phone_numbers = re.findall(pattern, message_body)
+
+        # Function to send a message to a list of numbers
+        for number in phone_numbers:
+            message = client.messages.create(
+                from_="whatsapp:+18643873878",
+                to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
                 content_sid=betinal_offer,
             )
-            log_message_in_dynamodb(phone_number, "sent betfinal offer message", "outgoing", message_sid, profile_name, to_number)
-        process_betfinal_message(message_body)
+            time.sleep(1)
+            message = client.messages.create(
+                from_="whatsapp:+18643873878",
+                to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
+                content_sid=betfinal_check_registration,
+            )
+            log_message_in_dynamodb(number, "sent betfinal casino offer", "outgoing", message.sid,
+                                        profile_name, to_number)
+            logging.info(f"Message sent to {number}")
         # Send the message via Twilio
         
 ####CUSTOM COMMANDS DONE####
