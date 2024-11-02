@@ -136,7 +136,7 @@ def whatsapp_reply():
                 to=f"whatsapp:{phone_number}",  # Each number should be prefixed with 'whatsapp:'
                 body=custom_message,
             )
-            log_message_in_dynamodb(phone_number, "sent manual message", "outgoing", message_sid, profile_name, to_number)
+            log_message_in_dynamodb(phone_number, "sent manual message to " + phone_number, "outgoing", message_sid, to_number)
         process_custom_message(message_body)
         # Send the message via Twilio
 
@@ -158,7 +158,7 @@ def whatsapp_reply():
                 to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
                 content_sid=casino_888_check_registration,
             )
-            log_message_in_dynamodb(from_number, "sent casino 888 offer message manually", "outgoing", message.sid, profile_name, to_number)
+            log_message_in_dynamodb(number, "sent casino 888 offer message manually to " + number, "outgoing", message.sid, profile_name, to_number)
 
             logging.info(f"Message sent to {number}")
 
@@ -180,7 +180,7 @@ def whatsapp_reply():
                 to=f"whatsapp:{number}",  # Each number should be prefixed with 'whatsapp:'
                 content_sid=betfinal_check_registration,
             )
-            log_message_in_dynamodb(from_number, "sent casino betfinal offer message manually", "outgoing", message.sid, profile_name, to_number)
+            log_message_in_dynamodb(number, "sent casino betfinal offer message manually to " + number, "outgoing", message.sid, profile_name, to_number)
             logging.info(f"Message sent to {number}")
         # Send the message via Twilio
         
